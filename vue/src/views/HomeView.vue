@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { watch, reactive } from "vue";
+import { watch, reactive, ref } from "vue";
 import { type Person, store, create, update, remove } from "@/store";
+import { useRageClickOutside } from "@/useRageClickOutside";
 
 const state = reactive({
   prefix: "",
@@ -36,10 +37,14 @@ const reset_inputs = (person?: Person) => {
 };
 
 watch(() => state.selected, reset_inputs);
+
+const homeViewRef = ref(null);
+
+useRageClickOutside(homeViewRef);
 </script>
 
 <template>
-  <main>
+  <main ref="homeViewRef">
     <input placeholder="filter prefix" v-model="state.prefix" />
 
     <select v-model="state.index" size="5">
@@ -52,12 +57,14 @@ watch(() => state.selected, reset_inputs);
       </option>
     </select>
 
-    <label>
-      <input v-model="state.first" placeholder="first" />
-    </label>
-    <label>
-      <input v-model="state.last" placeholder="last" />
-    </label>
+    <div class="labels">
+      <label>
+        <input v-model="state.first" placeholder="first" />
+      </label>
+      <label>
+        <input v-model="state.last" placeholder="last" />
+      </label>
+    </div>
 
     <div class="buttons">
       <button

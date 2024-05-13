@@ -14,10 +14,14 @@ window.CommandBar.boot("me").then(() => {
     template: { type: "link", value: "/", operation: "router" },
   });
   window.CommandBar.addCommand({
-    name: "Foo",
-    text: "Foo",
+    name: "About",
+    text: "About",
     category: "Navigation",
-    template: { type: "link", value: "/foo", operation: "router" },
+    template: {
+      type: "link",
+      value: "/about",
+      operation: "router",
+    },
   });
 
   window.CommandBar.addContext(
@@ -33,6 +37,47 @@ window.CommandBar.boot("me").then(() => {
       quickFindOptions: { quickFind: true },
     }
   );
+
+  const setTheme = (value: { New_color: string }) => {
+    const newColor = value.New_color.startsWith("#")
+      ? value.New_color
+      : value.New_color === "dark" || value.New_color === "light"
+      ? value.New_color
+      : `#${value.New_color}`;
+    window.CommandBar.setTheme(newColor.substring(0, 7));
+  };
+
+  window.CommandBar.addCommand({
+    name: "Learn",
+    text: "Learn about CommandBar",
+    category: "Welcome",
+    template: {
+      type: "link",
+      value: "/about#learn",
+      operation: "router",
+    },
+  });
+  window.CommandBar.addCommand({
+    name: "Help",
+    text: "Get help",
+    category: "Welcome",
+    template: {
+      type: "link",
+      value: "/about#help",
+      operation: "router",
+    },
+  });
+  window.CommandBar.addCallback("setTheme", setTheme);
+  window.CommandBar.addCommand({
+    name: "setTheme",
+    text: "Update CommandBar Theme Color",
+    category: "Welcome",
+    icon: "https://openmoji.org/data/color/svg/1F590.svg",
+    template: { type: "callback", value: "setTheme" },
+    arguments: {
+      New_color: { order_key: 0, value: "text", type: "provided" },
+    },
+  });
 
   window.CommandBar.addCallback("create", create);
   window.CommandBar.addCallback("update", update);
@@ -97,8 +142,7 @@ window.CommandBar.boot("me").then(() => {
 <template>
   <nav>
     <router-link to="/">Home</router-link>
-    <router-link to="/foo">Foo</router-link>
+    <router-link to="/about">About</router-link>
   </nav>
-
   <RouterView />
 </template>
